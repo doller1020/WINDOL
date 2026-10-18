@@ -7,9 +7,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-# ================= SEGREDOS E CONFIGURAÇÃO (DEVSEG / CIS 16.4) =================
-# A chave secreta é lida dinamicamente do ambiente operacional, evitando hardcode em repositórios públicos
-app.secret_key = os.environ.get("WINDOL_SECRET_KEY", "windol-seguranca-lgpd-tcc-secret-2026")
+# ================= SEGREDOS E CONFIGURAÇÃO (DEVSEG 11.6 / CIS 16.4) =================
+# A chave secreta é lida EXCLUSIVAMENTE da variável de ambiente WINDOL_SECRET_KEY.
+# Não há fallback hardcoded — ausência da variável encerra a aplicação de forma segura (Fail Secure).
+_secret_key = os.environ.get("WINDOL_SECRET_KEY")
+if not _secret_key:
+    raise RuntimeError(
+        "[ERRO DE SEGURANÇA] A variável de ambiente 'WINDOL_SECRET_KEY' não está definida. "
+        "Defina-a antes de iniciar a aplicação. Exemplo: set WINDOL_SECRET_KEY=sua-chave-segura-aqui"
+    )
+app.secret_key = _secret_key
 
 
 # ================= CONEXÃO COM O BANCO =================

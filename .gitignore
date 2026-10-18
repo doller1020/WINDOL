@@ -1,6 +1,9 @@
 # Banco de dados
 database.db
 
+# Variáveis de ambiente reais (NUNCA commitar)
+.env
+
 # Python
 __pycache__/
 *.pyc
