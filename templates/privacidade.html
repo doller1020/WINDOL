@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Aviso de Privacidade e Proteção de Dados - WINDOL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .privacidade-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            line-height: 1.6;
+        }
+        .secao {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+        }
+        .secao h3 {
+            margin-left: 0;
+            color: #38bdf8;
+        }
+        ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topo">
+        <div class="logo">🔒 WINDOL | Privacidade e LGPD</div>
+        <div>
+            {% if session.get("usuario") %}
+                <span style="margin-right: 15px;">👤 {{ session["usuario"] }}</span>
+                {% if session.get("tipo") == "admin" %}
+                    <a href="/admin"><button>Painel Admin</button></a>
+                {% elif session.get("tipo") == "usuario" %}
+                    <a href="/meus_chamados"><button>Meus Chamados</button></a>
+                {% else %}
+                    <a href="/chamados"><button>Fila Técnica</button></a>
+                {% endif %}
+                <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+            {% else %}
+                <a href="/"><button>Fazer Login</button></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="privacidade-container">
+        <h1>Aviso de Privacidade e Tratamento de Dados Pessoais</h1>
+        <p style="color: #94a3b8; font-size: 14px;">
+            Documento de Transparência e Governança elaborado com fundamento na <strong>Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD)</strong>, especificamente nos <em>Artigos 6º (Princípios)</em> e <em>9º (Direito à Informação)</em>.
+        </p>
+
+        <div class="secao">
+            <h3>1. Finalidade do Tratamento de Dados (Art. 6º, I)</h3>
+            <p>O Sistema Help Desk WINDOL realiza o tratamento de dados estritamente para:</p>
+            <ul>
+                <li>Identificação e autenticação segura de colaboradores e solicitantes de suporte de TI;</li>
+                <li>Registro, triagem, atribuição de técnicos e resolução de solicitações de suporte;</li>
+                <li>Rastreabilidade operacional e manutenção de trilhas de auditoria para garantir a segurança da informação e prevenir fraudes.</li>
+            </ul>
+        </div>
+
+        <div class="secao">
+            <h3>2. Bases Legais Aplicáveis (Art. 7º)</h3>
+            <p>O processamento das informações fundamenta-se nas seguintes hipóteses legais da LGPD:</p>
+            <ul>
+                <li><strong>Execução de Contrato / Procedimentos Preliminares (Art. 7º, V):</strong> Necessário para a prestação de serviços internos de suporte técnico;</li>
+                <li><strong>Cumprimento de Obrigação Legal ou Regulatória (Art. 7º, II):</strong> Manutenção de registros de acesso a aplicações (Marco Civil da Internet, Lei 12.965/2014, Art. 15);</li>
+                <li><strong>Legítimo Interesse do Controlador (Art. 7º, IX):</strong> Salvaguarda da segurança da informação, auditoria interna e prevenção a incidentes.</li>
+            </ul>
+        </div>
+
+        <div class="secao">
+            <h3>3. Minimização de Dados e Princípio da Necessidade (Art. 6º, III)</h3>
+            <p>
+                O sistema adota o paradigma de <em>Privacy by Design</em>. Não são coletados nem armazenados dados pessoais sensíveis (dados de saúde, biométricos, religião ou filiação política) nem informações pessoais desnecessárias (como CPF particular, endereço ou dados bancários). Os registros limitam-se ao identificador de usuário (login corporativo), nome funcional, e-mail institucional, perfil de acesso e endereço IP de conexão para fins de auditoria.
+            </p>
+        </div>
+
+        <div class="secao">
+            <h3>4. Medidas Técnicas de Segurança Adotadas (Art. 46)</h3>
+            <ul>
+                <li><strong>Criptografia em Repouso:</strong> Senhas nunca são armazenadas em texto simples, utilizando derivação com salt adaptativo via PBKDF2:SHA-256;</li>
+                <li><strong>Controle de Acesso Mandatório (RBAC):</strong> Validação mandatória no backend de cada rota sensível pelo perfil autorizado;</li>
+                <li><strong>Proteção de Sessão e Segredos:</strong> Chave de aplicação (`SECRET_KEY`) mantida fora do código-fonte em variáveis de ambiente, com proteção de integridade criptográfica de cookies de sessão;</li>
+                <li><strong>Trilhas de Auditoria:</strong> Registro pericial de eventos críticos para garantir o princípio da Responsabilização e Prestação de Contas (Art. 6º, X).</li>
+            </ul>
+        </div>
+
+        <div class="secao">
+            <h3>5. Direitos dos Titulares de Dados (Art. 18)</h3>
+            <p>
+                Os usuários do sistema podem exercer seus direitos de confirmação de existência de tratamento, acesso aos seus chamados e dados cadastrais, correção de informações incompletas ou incorretas e esclarecimentos sobre o uso dos dados mediante solicitação ao Administrador do Sistema.
+            </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            {% if session.get("usuario") %}
+                <a href="javascript:history.back()"><button>Retornar ao Sistema</button></a>
+            {% else %}
+                <a href="/"><button>Voltar para o Login</button></a>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

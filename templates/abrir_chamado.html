@@ -1,54 +1,48 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-BR">
 <head>
-    <title>Abrir Chamado</title>
-
+    <meta charset="UTF-8">
+    <title>Abrir Chamado - Sistema Windol</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
-
-<div class="usuario-logado">
-
-    👤 {{ session["usuario"] }}
-
-</div>
-
-
-    <!-- TOPO -->
     <div class="topo">
-
-        <a href="/logout">
-            <button>Sair</button>
-        </a>
-
-        <button onclick="history.back()">Voltar</button>
-
-        <a href="/meus_chamados">
-            <button>Meus Chamados</button>
-        </a>
-
+        <div class="logo">🎫 WINDOL | Novo Chamado</div>
+        <div>
+            <span style="margin-right: 15px;">👤 {{ session["usuario"] }}</span>
+            <a href="/meus_chamados"><button>Meus Chamados</button></a>
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+        </div>
     </div>
 
-    <!-- CARD -->
-    <div class="card">
+    <div class="card" style="max-width: 650px; margin: 30px auto; padding: 25px; background-color: #1e293b; border-radius: 10px;">
+        <h1>Abertura de Chamado de Suporte</h1>
+        <p style="color: #94a3b8; font-size: 13px;">
+            Descreva a solicitação ou incidente técnico com clareza para triagem inicial (Nível 1).
+        </p>
 
-        <h1>Abrir Chamado</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div style="margin-bottom: 20px; padding: 12px; background-color: #7f1d1d; border-left: 4px solid #ef4444; border-radius: 4px;">
+                    {% for message in messages %}
+                        <p style="margin: 0; color: #fecaca; font-size: 14px;">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <label>Título:</label><br>
-            <input type="text" name="titulo" required><br><br>
+            <label>Título do Chamado:</label><br>
+            <input type="text" name="titulo" required placeholder="Ex: Falha de conexão com a VPN corporativa" style="width: 100%;"><br><br>
 
-            <label>Descrição:</label><br>
-            <textarea name="descricao" rows="6" required></textarea><br><br>
+            <label>Descrição Detalhada do Problema:</label><br>
+            <textarea name="descricao" rows="7" required placeholder="Informe o que ocorreu, sistema afetado e mensagens de erro exibidas..." style="width: 100%;"></textarea><br><br>
 
-            <button type="submit">Abrir Chamado</button>
-
+            <button type="submit" style="width: 100%;">Registrar Chamado</button>
         </form>
-
     </div>
 
 </body>

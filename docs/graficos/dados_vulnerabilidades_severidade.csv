@@ -1,0 +1,4 @@
+Severidade,Identificadas no Legado,Remediadas no WINDOL,Remanescentes
+Crítica (CVSS >= 9.0),2,2,0
+Alta (CVSS 7.0 - 8.9),4,4,0
+Média (CVSS 4.0 - 6.9),2,2,0

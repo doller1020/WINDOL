@@ -1,85 +1,58 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-BR">
 <head>
-    <title>Gerente</title>
+    <meta charset="UTF-8">
+    <title>Painel da Gerência - Sistema Windol</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
     <div class="topo">
-
-        <div class="logo">
-            Help Desk
+        <div class="logo">📊 WINDOL | Painel Gerencial</div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <a href="/admin/auditoria"><button style="background-color: #0284c7;">🛡️ Trilhas de Auditoria</button></a>
+            <a href="/privacidade"><button style="background-color: #334155;">🔒 Privacidade</button></a>
+            <span style="margin: 0 10px;">👤 {{ session["usuario"] }} (Gerência)</span>
+            <a href="/alterar_senha"><button style="background-color: #475569;">Alterar Senha</button></a>
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
         </div>
-
-        <div class="usuario-menu">
-
-            <button class="usuario-btn" onclick="toggleMenu()">
-                👤 {{ session["usuario"] }}
-            </button>
-
-            <div id="menuUsuario" class="dropdown">
-
-                <a href="/alterar_senha">
-                    🔒 Alterar Senha
-                </a>
-
-                <a href="/logout">
-                    🚪 Sair da Sessão
-                </a>
-
-            </div>
-
-        </div>
-
     </div>
 
     <div class="card">
-
-        <h1>Chamados Finalizados</h1>
+        <h1>Relatório de Chamados Finalizados</h1>
+        <p style="margin-left: 20px; color: #94a3b8;">
+            Acompanhamento gerencial de resoluções e tempo de atendimento em conformidade com as diretrizes de governança.
+        </p>
 
         <table>
-
-            <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Usuário</th>
-                <th>Técnico</th>
-                <th>Finalizado em</th>
-            </tr>
-
-            {% for c in chamados %}
-            <tr>
-                <td>{{ c["id"] }}</td>
-                <td>{{ c["titulo"] or "" }}</td>
-                <td>{{ c["usuario"] or "" }}</td>
-                <td>{{ c["tecnico_responsavel"] or "" }}</td>
-                <td>{{ c["data_finalizacao"] or "" }}</td>
-            </tr>
-            {% endfor %}
-
+            <thead>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th>Título</th>
+                    <th>Usuário Solicitante</th>
+                    <th>Técnico Responsável</th>
+                    <th>Finalizado em</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in chamados %}
+                <tr>
+                    <td>#{{ c["id"] }}</td>
+                    <td>{{ c["titulo"] or "" }}</td>
+                    <td>{{ c["usuario"] or "" }}</td>
+                    <td>{{ c["tecnico_responsavel"] or "" }}</td>
+                    <td>{{ c["data_finalizacao"] or "" }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px; color: #94a3b8;">
+                        Nenhum chamado finalizado registrado no momento.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-
     </div>
 
-    <script>
-
-        function toggleMenu() {
-            document.getElementById("menuUsuario").classList.toggle("show");
-        }
-
-        window.addEventListener("pageshow", function(event) {
-
-            if (event.persisted) {
-                window.location.reload();
-            }
-
-        });
-
-    </script>
-
 </body>
-
 </html>

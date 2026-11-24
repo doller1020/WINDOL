@@ -1,0 +1,41 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\kkkle\AppData\Local\Python\pythoncore-3.14-64\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\kkkle\Downloads\WINDOL-main\WINDOL-main
+collecting ... collected 33 items
+
+tests/test_auth.py::test_login_valido_usuario PASSED                     [  3%]
+tests/test_auth.py::test_login_valido_admin PASSED                       [  6%]
+tests/test_auth.py::test_login_invalido_senha_incorreta PASSED           [  9%]
+tests/test_auth.py::test_login_invalido_usuario_inexistente PASSED       [ 12%]
+tests/test_auth.py::test_armazenamento_seguro_senhas PASSED              [ 15%]
+tests/test_auth.py::test_logout_encerra_sessao PASSED                    [ 18%]
+tests/test_auth.py::test_alterar_senha_sucesso PASSED                    [ 21%]
+tests/test_auth.py::test_alterar_senha_rejeita_curta PASSED              [ 24%]
+tests/test_chamados.py::test_abertura_chamado_sucesso PASSED             [ 27%]
+tests/test_chamados.py::test_abertura_chamado_rejeita_campos_vazios PASSED [ 30%]
+tests/test_chamados.py::test_meus_chamados_filtra_por_usuario PASSED     [ 33%]
+tests/test_chamados.py::test_tecnico_assume_chamado PASSED               [ 36%]
+tests/test_chamados.py::test_tecnico_escalona_chamado_n1_para_n2 PASSED  [ 39%]
+tests/test_chamados.py::test_tecnico_finaliza_chamado PASSED             [ 42%]
+tests/test_chamados.py::test_exclusao_chamado_titular_sucesso PASSED     [ 45%]
+tests/test_chamados.py::test_exclusao_chamado_nao_titular_bloqueado PASSED [ 48%]
+tests/test_permissions.py::test_rota_admin_bloqueia_anonimo PASSED       [ 51%]
+tests/test_permissions.py::test_rota_admin_bloqueia_usuario_comum PASSED [ 54%]
+tests/test_permissions.py::test_rota_admin_permite_administrador PASSED  [ 57%]
+tests/test_permissions.py::test_rota_chamados_bloqueia_usuario_comum PASSED [ 60%]
+tests/test_permissions.py::test_rota_chamados_permite_tecnico_n1 PASSED  [ 63%]
+tests/test_permissions.py::test_rota_gerente_permite_gerente_e_admin PASSED [ 66%]
+tests/test_permissions.py::test_rota_auditoria_permite_admin_e_gerente PASSED [ 69%]
+tests/test_permissions.py::test_rota_colaboradores_permite_apenas_admin PASSED [ 72%]
+tests/test_security.py::test_sql_injection_login_bloqueado PASSED        [ 75%]
+tests/test_security.py::test_sql_injection_filtro_chamados_neutralizado PASSED [ 78%]
+tests/test_security.py::test_csrf_bloqueia_requisicao_sem_token PASSED   [ 81%]
+tests/test_security.py::test_csrf_permite_requisicao_com_token_valido PASSED [ 84%]
+tests/test_security.py::test_security_headers_presentes PASSED           [ 87%]
+tests/test_security.py::test_debug_mode_desativado PASSED                [ 90%]
+tests/test_security.py::test_fail_secure_erro_404_sem_stacktrace PASSED  [ 93%]
+tests/test_security.py::test_registro_auditoria_eventos_criticos PASSED  [ 96%]
+tests/test_security.py::test_minimizacao_dados_colaboradores_lgpd PASSED [100%]
+
+============================= 33 passed in 57.15s =============================

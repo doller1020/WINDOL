@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Colaboradores - Minimização LGPD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .lgpd-badge {
+            background-color: #0369a1;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .status-ativo { color: #10b981; font-weight: bold; }
+        .status-inativo { color: #ef4444; font-weight: bold; }
+        .info-card {
+            margin: 20px;
+            padding: 16px;
+            background-color: #1e293b;
+            border-left: 4px solid #0284c7;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topo">
+        <div class="logo">👥 WINDOL | Gestão de Colaboradores</div>
+        <div>
+            <span style="margin-right: 15px;">👤 {{ session["usuario"] }} ({{ session["tipo"] }})</span>
+            <a href="/admin"><button>Painel Admin</button></a>
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+        </div>
+    </div>
+
+    <h1>Catálogo Funcional de Colaboradores</h1>
+
+    <div class="info-card">
+        <h3>🛡️ Adequação ao Princípio da Minimização e Necessidade (LGPD Art. 6º, III)</h3>
+        <p style="margin: 0; color: #cbd5e1; font-size: 14px;">
+            Este catálogo armazena estritamente os dados necessários para a distribuição operacional de tickets (login, nome profissional, departamento, e-mail institucional e especialidade técnica). Informações pessoais excessivas (como CPF, telefone pessoal, endereço residencial ou data de nascimento) foram expressamente excluídas do modelo de dados por <em>Privacy by Design</em>.
+        </p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 70px;">ID</th>
+                <th style="width: 140px;">Usuário Login</th>
+                <th>Nome Completo (Sintético)</th>
+                <th>Departamento</th>
+                <th>E-mail Corporativo</th>
+                <th>Especialidade</th>
+                <th style="width: 100px;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for colab in colaboradores %}
+            <tr>
+                <td>#{{ colab["id"] }}</td>
+                <td><strong>{{ colab["usuario_login"] }}</strong></td>
+                <td>{{ colab["nome_completo"] }}</td>
+                <td>{{ colab["departamento"] }}</td>
+                <td><code>{{ colab["email_corporativo"] }}</code></td>
+                <td>{{ colab["especialidade"] }}</td>
+                <td>
+                    {% if colab["status_ativo"] == 1 %}
+                        <span class="status-ativo">● Ativo</span>
+                    {% else %}
+                        <span class="status-inativo">○ Inativo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 20px; color: #94a3b8;">
+                    Nenhum colaborador registrado.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

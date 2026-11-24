@@ -1,0 +1,9 @@
+Controle de Seguranca,Sistema Original,Sistema WINDOL
+Criptografia de Senhas (PBKDF2),0,1
+Gestao de Segredos (os.environ),0,1
+Controle de Acesso RBAC no Backend,0,1
+Protecao contra CSRF,0,1
+Hardening (debug=False),0,1
+Tratamento Seguro de Erros (CWE-200),0,1
+Trilhas de Auditoria (logs_auditoria),0,1
+Minimizacao de Dados LGPD,0,1

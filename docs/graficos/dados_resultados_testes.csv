@@ -1,0 +1,5 @@
+Modulo de Testes,Total de Testes,Aprovados,Reprovados,Taxa de Sucesso (%)
+Autenticacao (test_auth.py),8,8,0,100.0
+Controle de Acesso RBAC (test_permissions.py),8,8,0,100.0
+Ciclo de Vida / IDOR (test_chamados.py),8,8,0,100.0
+Seguranca e LGPD (test_security.py),9,9,0,100.0

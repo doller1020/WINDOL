@@ -1,61 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Painel Admin</title>
-
+    <meta charset="UTF-8">
+    <title>Painel do Administrador - Sistema Windol</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .admin-nav {
+            margin: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-nav button {
+            background-color: #1e293b;
+            border: 1px solid #3b82f6;
+        }
+        .admin-nav button:hover {
+            background-color: #2563eb;
+        }
+    </style>
 </head>
 <body>
 
-
-<div class="usuario-logado">
-
-    👤 {{ session["usuario"] }}
-
+<div class="topo">
+    <div class="logo">⚙️ WINDOL | Administração</div>
+    <div>
+        <span style="margin-right: 15px;">👤 {{ session["usuario"] }} ({{ session["tipo"] }})</span>
+        <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+    </div>
 </div>
-
-<a href="/logout">
-    <button>Sair</button>
-</a>
-
-<a href="/admin">
-    <button>Voltar</button>
-</a>
 
 <h1>Painel do Administrador</h1>
 
-<br>
+<div class="admin-nav">
+    <a href="/usuarios"><button>👥 Gerenciar Usuários</button></a>
+    <a href="/admin/colaboradores"><button>📋 Colaboradores (LGPD)</button></a>
+    <a href="/admin/auditoria"><button>🛡️ Trilhas de Auditoria</button></a>
+    <a href="/chamados"><button>🎫 Fila de Chamados</button></a>
+    <a href="/privacidade"><button>🔒 Política de Privacidade</button></a>
+</div>
 
-<a href="/usuarios">
-    <button>Gerenciar Usuários</button>
-</a>
-
-<h2>Criar Usuário</h2>
+<h2>Criar Novo Usuário com Hashing Criptográfico</h2>
 
 <form method="POST" action="/criar_usuario">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <label>Login:</label><br>
     <input type="text" name="login" required><br><br>
 
+    <label>Nome Completo:</label><br>
+    <input type="text" name="nome_completo" placeholder="Ex: Maria Santos"><br><br>
+
+    <label>E-mail Corporativo:</label><br>
+    <input type="email" name="email_corporativo" placeholder="exemplo@windol.local"><br><br>
+
     <label>Senha:</label><br>
-    <input type="text" name="senha" required><br><br>
+    <input type="password" name="senha" required><br><br>
 
-    <label>Tipo:</label><br>
-
+    <label>Tipo de Perfil (RBAC):</label><br>
     <select name="tipo">
-        <option value="usuario">Usuário</option>
-        <option value="tecnico_n1">Técnico N1</option>
-        <option value="tecnico_n2">Técnico N2</option>
-        <option value="tecnico_n3">Técnico N3</option>
-        <option value="gerente">Gerente</option>
-        <option value="admin">Admin</option>
+        <option value="usuario">Usuário (Solicitante)</option>
+        <option value="tecnico_n1">Técnico N1 (Suporte Geral)</option>
+        <option value="tecnico_n2">Técnico N2 (Infra/Redes)</option>
+        <option value="tecnico_n3">Técnico N3 (Segurança/Sistemas)</option>
+        <option value="gerente">Gerente (Relatórios/Operações)</option>
+        <option value="admin">Administrador (Gestão Integral)</option>
     </select>
-
     <br><br>
 
-    <button type="submit">Criar</button>
-
+    <button type="submit">Criar Usuário</button>
 </form>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div style="margin: 20px; padding: 15px; background-color: #1e3a5f; border-left: 4px solid #38bdf8; border-radius: 6px;">
+            {% for message in messages %}
+                <p style="margin: 0; color: #f1f5f9;">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
 
 </body>
 </html>

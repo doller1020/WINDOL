@@ -1,141 +1,98 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-BR">
 <head>
-    <title>Meus Chamados</title>
+    <meta charset="UTF-8">
+    <title>Meus Chamados - Sistema Windol</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
     <div class="topo">
-
-        <div class="logo">
-            Help Desk
+        <div class="logo">Help Desk WINDOL</div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <a href="/abrir_chamado"><button style="background-color: #059669;">+ Abrir Chamado</button></a>
+            <a href="/privacidade"><button style="background-color: #334155;">🔒 Privacidade</button></a>
+            <a href="/alterar_senha"><button style="background-color: #475569;">Alterar Senha</button></a>
+            <span>👤 {{ session["usuario"] }}</span>
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
         </div>
-
-        <div class="usuario-menu">
-
-            <button class="usuario-btn" onclick="toggleMenu()">
-                👤 {{ session["usuario"] }}
-            </button>
-
-            <div id="menuUsuario" class="dropdown">
-
-                <a href="/alterar_senha">
-                    🔒 Alterar Senha
-                </a>
-
-                <a href="/logout">
-                    🚪 Sair da Sessão
-                </a>
-
-            </div>
-
-        </div>
-
     </div>
 
-    <a href="/abrir_chamado">
-        <button>Abrir Chamado</button>
-    </a>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="margin: 20px; padding: 12px 18px; background-color: #1e3a5f; border-left: 4px solid #38bdf8; border-radius: 6px;">
+                {% for message in messages %}
+                    <p style="margin: 0; color: #f1f5f9; font-size: 14px;">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
-    <br><br>
-
-    <button onclick="history.back()">Voltar</button>
-
-    <h2>Meus Chamados</h2>
-
-    <br>
+    <h2>Meus Chamados Registrados</h2>
 
     <!-- FILTRO -->
-    <form method="GET" action="/meus_chamados">
-
+    <form method="GET" action="/meus_chamados" style="margin: 20px;">
         <label>Ordenar:</label>
-
-        <select name="ordem">
-
-            <option value="recente"
-                {% if request.args.get('ordem') != 'antigo' %}
-                selected
-                {% endif %}>
-                Mais recentes
-            </option>
-
-            <option value="antigo"
-                {% if request.args.get('ordem') == 'antigo' %}
-                selected
-                {% endif %}>
-                Mais antigos
-            </option>
-
+        <select name="ordem" style="width: 180px;">
+            <option value="recente" {% if request.args.get('ordem') != 'antigo' %}selected{% endif %}>Mais recentes</option>
+            <option value="antigo" {% if request.args.get('ordem') == 'antigo' %}selected{% endif %}>Mais antigos</option>
         </select>
-
         <button type="submit">Aplicar</button>
-
     </form>
 
-    <br>
-
     <table border="1">
-
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>Status</th>
-            <th>Nível</th>
-            <th>Técnico</th>
-            <th>Resposta Técnica</th>
-            <th>Data Abertura</th>
-            <th>Data Atendimento</th>
-            <th>Data Finalização</th>
-        </tr>
-
-        {% for chamado in chamados %}
-        <tr>
-
-            <td>{{ chamado["id"] }}</td>
-
-            <td>{{ chamado["titulo"] or "" }}</td>
-
-            <td>{{ chamado["descricao"] or "" }}</td>
-
-            <td>{{ chamado["status"] or "" }}</td>
-
-            <td>{{ chamado["nivel"] or "" }}</td>
-
-            <td>{{ chamado["tecnico_responsavel"] or "" }}</td>
-
-            <td>{{ chamado["resposta_tecnica"] or "" }}</td>
-
-            <td>{{ chamado["data_abertura"] or "" }}</td>
-
-            <td>{{ chamado["data_atendimento"] or "" }}</td>
-
-            <td>{{ chamado["data_finalizacao"] or "" }}</td>
-
-        </tr>
-        {% endfor %}
-
+        <thead>
+            <tr>
+                <th style="width: 60px;">ID</th>
+                <th>Título</th>
+                <th>Descrição</th>
+                <th style="width: 110px;">Status</th>
+                <th style="width: 70px;">Nível</th>
+                <th style="width: 120px;">Técnico</th>
+                <th>Resposta Técnica</th>
+                <th style="width: 140px;">Data Abertura</th>
+                <th style="width: 140px;">Data Atendimento</th>
+                <th style="width: 140px;">Data Finalização</th>
+                <th style="width: 100px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chamado in chamados %}
+            <tr>
+                <td>#{{ chamado["id"] }}</td>
+                <td><strong>{{ chamado["titulo"] or "" }}</strong></td>
+                <td>{{ chamado["descricao"] or "" }}</td>
+                <td>
+                    <span style="background-color: #1e293b; padding: 3px 8px; border-radius: 4px; border: 1px solid #334155;">
+                        {{ chamado["status"] or "" }}
+                    </span>
+                </td>
+                <td>{{ chamado["nivel"] or "" }}</td>
+                <td>{{ chamado["tecnico_responsavel"] or "-" }}</td>
+                <td>{{ chamado["resposta_tecnica"] or "-" }}</td>
+                <td>{{ chamado["data_abertura"] or "" }}</td>
+                <td>{{ chamado["data_atendimento"] or "-" }}</td>
+                <td>{{ chamado["data_finalizacao"] or "-" }}</td>
+                <td>
+                    {% if chamado["status"] != "finalizado" %}
+                    <form method="POST" action="/deletar_chamado/{{ chamado['id'] }}" onsubmit="return confirm('Deseja realmente cancelar este chamado?');" style="margin: 0;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" style="background-color: #ef4444; padding: 5px 10px; font-size: 12px;">Excluir</button>
+                    </form>
+                    {% else %}
+                        <span style="color: #64748b; font-size: 12px;">Concluído</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="11" style="text-align: center; padding: 25px; color: #94a3b8;">
+                    Você não possui chamados registrados no momento.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
-    <script>
-
-        function toggleMenu() {
-            document.getElementById("menuUsuario").classList.toggle("show");
-        }
-
-        window.addEventListener("pageshow", function(event) {
-
-            if (event.persisted) {
-                window.location.reload();
-            }
-
-        });
-
-    </script>
-
 </body>
-
 </html>

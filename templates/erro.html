@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Erro {{ codigo }} - Sistema Windol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .erro-card {
+            max-width: 550px;
+            margin: 80px auto;
+            padding: 35px;
+            background-color: #1e293b;
+            border-radius: 12px;
+            text-align: center;
+            border-top: 4px solid #ef4444;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .codigo-erro {
+            font-size: 72px;
+            font-weight: bold;
+            color: #ef4444;
+            margin: 0;
+            line-height: 1;
+        }
+        .desc-erro {
+            color: #cbd5e1;
+            margin: 20px 0 30px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="erro-card">
+        <div class="codigo-erro">{{ codigo }}</div>
+        <h2>Atenção</h2>
+        <p class="desc-erro">{{ mensagem }}</p>
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 25px;">
+            🛡️ <em>Medida de Segurança CWE-200 / CWE-209: Detalhes internos de execução e stack traces foram suprimidos para salvaguardar a aplicação. O evento foi registrado na trilha de auditoria.</em>
+        </p>
+        <a href="/"><button>Voltar ao Início</button></a>
+    </div>
+
+</body>
+</html>

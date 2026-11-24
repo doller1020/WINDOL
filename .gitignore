@@ -1,8 +1,13 @@
 # Banco de dados
 database.db
+database_original_backup.db
+*.db
+*.sqlite
+*.sqlite3
 
 # Variáveis de ambiente reais (NUNCA commitar)
 .env
+*.env
 
 # Python
 __pycache__/

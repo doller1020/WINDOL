@@ -1,68 +1,68 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-BR">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Login - Help Desk WINDOL</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .privacidade-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .privacidade-link a {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+        .privacidade-link a:hover {
+            color: #93c5fd;
+        }
+    </style>
 </head>
-
 <body>
 
-    <!-- CONTAINER CENTRAL -->
     <div class="login-container">
-
-        <!-- CARD LOGIN -->
         <div class="login-card">
-
-            <h1>Help Desk</h1>
+            <h1>Help Desk WINDOL</h1>
+            <p style="text-align: center; color: #94a3b8; font-size: 13px; margin-top: -10px; margin-bottom: 20px;">
+                Gestão Segura de Atendimento & Suporte
+            </p>
 
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label>Usuário:</label><br>
-                <input type="text" name="usuario" required>
-
-                <br><br>
+                <input type="text" name="usuario" autocomplete="username" required><br><br>
 
                 <label>Senha:</label><br>
-                <input type="password" name="senha" required>
+                <input type="password" name="senha" autocomplete="current-password" required><br><br>
 
-                <br><br>
-
-                <button type="submit">Entrar</button>
-
+                <button type="submit">Entrar no Sistema</button>
             </form>
 
-            <!-- MENSAGENS -->
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
-
                     <div class="mensagem">
-
                         {% for message in messages %}
-                            <p>{{ message }}</p>
+                            <p style="margin: 0;">{{ message }}</p>
                         {% endfor %}
-
                     </div>
-
                 {% endif %}
             {% endwith %}
 
+            <div class="privacidade-link">
+                🔒 <a href="/privacidade">Aviso de Privacidade e LGPD</a>
+            </div>
         </div>
-
     </div>
 
     <script>
-
         window.addEventListener("pageshow", function(event) {
-
             if (event.persisted) {
                 window.location.reload();
             }
-
         });
-
     </script>
 
 </body>
-
 </html>

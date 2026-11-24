@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Trilhas de Auditoria - Sistema Windol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-login { background-color: #059669; color: white; }
+        .badge-falha { background-color: #dc2626; color: white; }
+        .badge-rbac { background-color: #ea580c; color: white; }
+        .badge-chamado { background-color: #2563eb; color: white; }
+        .badge-usuario { background-color: #7c3aed; color: white; }
+        .badge-default { background-color: #475569; color: white; }
+        .filtro-box {
+            margin: 20px;
+            padding: 15px;
+            background-color: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topo">
+        <div class="logo">🛡️ WINDOL | Governança e Auditoria</div>
+        <div>
+            <span style="margin-right: 15px;">👤 {{ session["usuario"] }} ({{ session["tipo"] }})</span>
+            {% if session["tipo"] == "admin" %}
+                <a href="/admin"><button>Painel Admin</button></a>
+            {% elif session["tipo"] == "gerente" %}
+                <a href="/gerente"><button>Painel Gerente</button></a>
+            {% endif %}
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+        </div>
+    </div>
+
+    <h1>Trilhas de Auditoria e Eventos de Segurança</h1>
+    <p style="margin-left: 20px; color: #94a3b8;">
+        Registro contínuo e imutável de eventos críticos em conformidade com o <strong>Art. 6º, X da LGPD (Responsabilização e Prestação de Contas)</strong> e salvaguardas <strong>CIS Controls v8 (Controle 8)</strong>.
+    </p>
+
+    <div class="filtro-box">
+        <label>Total de Registros Recentes Exibidos:</label> <strong>{{ logs|length }}</strong>
+        <span style="margin-left: 30px; color: #94a3b8;">Exibindo os últimos 100 eventos ordenados de forma decrescente.</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th style="width: 170px;">Data / Hora</th>
+                <th style="width: 130px;">Usuário</th>
+                <th style="width: 190px;">Ação</th>
+                <th>Detalhes Técnicos</th>
+                <th style="width: 140px;">IP de Origem</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>#{{ log["id"] }}</td>
+                <td>{{ log["data_hora"] }}</td>
+                <td><strong>{{ log["usuario"] }}</strong></td>
+                <td>
+                    {% if "LOGIN_SUCESSO" in log["acao"] %}
+                        <span class="badge badge-login">{{ log["acao"] }}</span>
+                    {% elif "FALHA" in log["acao"] %}
+                        <span class="badge badge-falha">{{ log["acao"] }}</span>
+                    {% elif "RBAC" in log["acao"] or "NEGADO" in log["acao"] %}
+                        <span class="badge badge-rbac">{{ log["acao"] }}</span>
+                    {% elif "CHAMADO" in log["acao"] %}
+                        <span class="badge badge-chamado">{{ log["acao"] }}</span>
+                    {% elif "USUARIO" in log["acao"] %}
+                        <span class="badge badge-usuario">{{ log["acao"] }}</span>
+                    {% else %}
+                        <span class="badge badge-default">{{ log["acao"] }}</span>
+                    {% endif %}
+                </td>
+                <td style="color: #cbd5e1;">{{ log["detalhes"] }}</td>
+                <td><code>{{ log["ip_origem"] }}</code></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">
+                    Nenhum registro de auditoria encontrado na base de dados.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

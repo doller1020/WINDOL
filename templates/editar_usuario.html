@@ -1,51 +1,51 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-BR">
 <head>
-    <title>Editar Usuário</title>
-
+    <meta charset="UTF-8">
+    <title>Editar Usuário - Sistema Windol</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
     <div class="topo">
-
-        <a href="/usuarios">
-            <button>Voltar</button>
-        </a>
-
+        <div class="logo">⚙️ WINDOL | Editar Usuário</div>
+        <div>
+            <a href="/usuarios"><button>Voltar aos Usuários</button></a>
+            <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+        </div>
     </div>
 
-    <div class="card">
-
-        <h2>Editar Usuário</h2>
+    <div class="card" style="max-width: 500px; margin: 30px auto; padding: 25px; background-color: #1e293b; border-radius: 10px;">
+        <h2>Editar Dados de Usuário #{{ usuario['id'] }}</h2>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <label>Login:</label><br>
-            <input type="text" name="login" value="{{ usuario['login'] }}"><br><br>
+            <input type="text" name="login" value="{{ usuario['login'] }}" required style="width: 100%;"><br><br>
 
-            <label>Senha:</label><br>
-            <input type="text" name="senha" value="{{ usuario['senha'] }}"><br><br>
+            <label>Nome Completo:</label><br>
+            <input type="text" name="nome_completo" value="{{ usuario['nome_completo'] or '' }}" style="width: 100%;"><br><br>
 
-            <label>Tipo:</label><br>
+            <label>E-mail Corporativo:</label><br>
+            <input type="email" name="email_corporativo" value="{{ usuario['email_corporativo'] or '' }}" style="width: 100%;"><br><br>
 
-            <select name="tipo">
-                <option value="usuario">Usuário</option>
-                <option value="tecnico_n1">Técnico N1</option>
-                <option value="tecnico_n2">Técnico N2</option>
-                <option value="tecnico_n3">Técnico N3</option>
-                <option value="gerente">Gerente</option>
-                <option value="admin">Admin</option>
+            <label>Nova Senha (deixe em branco para manter a atual):</label><br>
+            <input type="password" name="senha" placeholder="Digite apenas se desejar redefinir" style="width: 100%;"><br><br>
+
+            <label>Tipo de Perfil (RBAC):</label><br>
+            <select name="tipo" style="width: 100%;">
+                <option value="usuario" {% if usuario['tipo'] == 'usuario' %}selected{% endif %}>Usuário (Solicitante)</option>
+                <option value="tecnico_n1" {% if usuario['tipo'] == 'tecnico_n1' %}selected{% endif %}>Técnico N1</option>
+                <option value="tecnico_n2" {% if usuario['tipo'] == 'tecnico_n2' %}selected{% endif %}>Técnico N2</option>
+                <option value="tecnico_n3" {% if usuario['tipo'] == 'tecnico_n3' %}selected{% endif %}>Técnico N3</option>
+                <option value="gerente" {% if usuario['tipo'] == 'gerente' %}selected{% endif %}>Gerente</option>
+                <option value="admin" {% if usuario['tipo'] == 'admin' %}selected{% endif %}>Admin</option>
             </select>
-
             <br><br>
 
-            <button type="submit">Salvar</button>
-
+            <button type="submit" style="width: 100%;">Salvar Alterações</button>
         </form>
-
     </div>
 
 </body>

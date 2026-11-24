@@ -1,33 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Alterar Senha</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Alterar Senha - Sistema Windol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<div class="card">
+<div class="topo">
+    <div class="logo">🔒 WINDOL | Segurança de Credenciais</div>
+    <div>
+        <span style="margin-right: 15px;">👤 {{ session["usuario"] }}</span>
+        <button onclick="history.back()">Voltar</button>
+        <a href="/logout"><button style="background-color: #dc2626;">Sair</button></a>
+    </div>
+</div>
 
-    <h2>Alterar Senha</h2>
+<div class="card" style="max-width: 450px; margin: 40px auto; padding: 25px; background-color: #1e293b; border-radius: 10px;">
+    <h2>Alteração de Senha</h2>
+    <p style="color: #94a3b8; font-size: 13px;">
+        A nova senha será processada com derivação criptográfica PBKDF2:SHA-256 e salt de 16 bytes.
+    </p>
 
-    <form method="POST">
+    <form method="POST" action="/alterar_senha">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <label>Nova senha:</label>
+        <label>Nova Senha:</label><br>
+        <input type="password" name="nova_senha" minlength="6" required style="width: 100%;"><br><br>
 
-        <br><br>
+        <label>Confirme a Nova Senha:</label><br>
+        <input type="password" name="confirma_senha" minlength="6" required style="width: 100%;"><br><br>
 
-        <input type="password" name="senha" required>
-
-        <br><br>
-
-        <button type="submit">
-            Salvar
-        </button>
-
+        <button type="submit" style="width: 100%;">Atualizar Senha com Segurança</button>
     </form>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div style="margin-top: 20px; padding: 12px; background-color: #1e3a5f; border-left: 4px solid #38bdf8; border-radius: 4px;">
+                {% for message in messages %}
+                    <p style="margin: 0; font-size: 14px;">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 </div>
 
 </body>

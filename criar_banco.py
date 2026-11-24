@@ -1,15 +1,19 @@
+"""
+Módulo de Inicialização e Migração do Banco de Dados Seguro - Sistema WINDOL
+Fundamentação: LGPD (Lei nº 13.709/2018), OWASP ASVS v4.0 (V2 e V4) e CIS Controls v8 (Controle 8 e 16).
+"""
+
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash
 
-# ================= CONEXÃO =================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(BASE_DIR, "database.db")
 
 conexao = sqlite3.connect(db_path)
 cursor = conexao.cursor()
 
-print("Inicializando o banco de dados seguro do Sistema Windol...")
+print("Inicializando e migrando o banco de dados seguro do Sistema Windol...")
 
 # ================= TABELA USUÁRIOS =================
 cursor.execute("""
@@ -48,7 +52,7 @@ CREATE TABLE IF NOT EXISTS chamados (
 )
 """)
 
-# ================= TABELA COLABORADORES (LGPD / DADOS SINTÉTICOS) =================
+# ================= TABELA COLABORADORES (LGPD / DADOS SINTÉTICOS / MINIMIZAÇÃO) =================
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS colaboradores (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +65,7 @@ CREATE TABLE IF NOT EXISTS colaboradores (
 )
 """)
 
-# ================= TABELA LOGS DE AUDITORIA =================
+# ================= TABELA LOGS DE AUDITORIA (CIS CONTROLS V8 / LGPD ART. 6º, X) =================
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS logs_auditoria (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,8 +77,8 @@ CREATE TABLE IF NOT EXISTS logs_auditoria (
 )
 """)
 
-# ================= POPULAR / ATUALIZAR USUÁRIOS COM HASH SEGURO =================
-usuarios = [
+# ================= POPULAR / ATUALIZAR USUÁRIOS COM HASH SEGURO (PBKDF2/SHA-256) =================
+usuarios_padrao = [
     ("admin", "admin123", "admin", "Administrador do Sistema", "admin@windol.local"),
     ("wingrid", "senha123", "usuario", "Wingrid Costa (Solicitante)", "wingrid@windol.local"),
     ("doller", "senha123", "usuario", "Doller Costa (Solicitante)", "doller@windol.local"),
@@ -84,19 +88,28 @@ usuarios = [
     ("gerente", "senha123", "gerente", "Gerência de Operações de TI", "gerente@windol.local")
 ]
 
-for login, senha_plana, tipo, nome, email in usuarios:
-    # Gerar hash seguro (PBKDF2 com salt)
+for login, senha_plana, tipo, nome, email in usuarios_padrao:
+    # Gerar hash criptográfico adaptativo com salt de 16 bytes
     senha_hash = generate_password_hash(senha_plana, method="pbkdf2:sha256", salt_length=16)
     
-    cursor.execute("SELECT id FROM usuarios WHERE login=?", (login,))
-    existe = cursor.fetchone()
+    cursor.execute("SELECT id, senha FROM usuarios WHERE login=?", (login,))
+    usuario_existente = cursor.fetchone()
     
-    if existe:
-        cursor.execute("""
-            UPDATE usuarios 
-            SET senha=?, tipo=?, nome_completo=?, email_corporativo=? 
-            WHERE login=?
-        """, (senha_hash, tipo, nome, email, login))
+    if usuario_existente:
+        # Se a senha existente ainda for texto puro (não começa com pbkdf2:), migra para hash
+        senha_atual = str(usuario_existente[1])
+        if not senha_atual.startswith("pbkdf2:"):
+            cursor.execute("""
+                UPDATE usuarios 
+                SET senha=?, tipo=?, nome_completo=?, email_corporativo=? 
+                WHERE login=?
+            """, (senha_hash, tipo, nome, email, login))
+        else:
+            cursor.execute("""
+                UPDATE usuarios 
+                SET tipo=?, nome_completo=?, email_corporativo=? 
+                WHERE login=?
+            """, (tipo, nome, email, login))
     else:
         cursor.execute("""
             INSERT INTO usuarios (login, senha, tipo, nome_completo, email_corporativo) 
@@ -126,7 +139,7 @@ for login, nome, depto, email, esp in colaboradores_sinteticos:
             VALUES (?, ?, ?, ?, ?)
         """, (login, nome, depto, email, esp))
 
-# ================= INSERIR LOG DE INICIALIZAÇÃO =================
+# ================= INSERIR LOG DE INICIALIZAÇÃO / MIGRAÇÃO =================
 cursor.execute("""
     INSERT INTO logs_auditoria (data_hora, usuario, acao, detalhes, ip_origem)
     VALUES (datetime('now', 'localtime'), 'SISTEMA', 'INIT_DATABASE', 'Migração de banco com hashes seguros PBKDF2 e catálogo sintético LGPD', '127.0.0.1')
@@ -139,8 +152,8 @@ conexao.close()
 print("\n[OK] Banco de dados do Sistema Windol configurado com SUCESSO!")
 print("Segurança aplicada:")
 print(" - Senhas migradas para hash PBKDF2:SHA-256 (com salt)")
-print(" - Tabela 'colaboradores' criada com dados sintéticos (LGPD Art. 6º)")
-print(" - Tabela 'logs_auditoria' estruturada para rastreabilidade (DEVSEG / CIS 16)")
+print(" - Tabela 'colaboradores' criada com dados sintéticos (LGPD Art. 6º, III)")
+print(" - Tabela 'logs_auditoria' estruturada para rastreabilidade (CIS Controls v8 / LGPD Art. 6º, X)")
 print("\nCredenciais atualizadas:")
 print(" - admin    / admin123  (Perfil: admin)")
 print(" - wingrid  / senha123  (Perfil: usuario)")
